@@ -1,25 +1,51 @@
-import React from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
+import React, { useContext } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
+
+// get access to Action Function and Context Object
+import { Context as AuthContext } from '../context/AuthContext';
+import AuthForm from '../components/AuthForm';
+
+import NavLink from '../components/NavLink';
 
 const SignupScreen = ({ navigation }) => {
+    // destructure the AuthContext properties
+    const { state, signup, clearErrorMessage } = useContext(AuthContext);
+
+    // useEffect(() => {
+    //     tryLocalSignin();
+    // }, []);
+
     return (
-        <>
-            <Text style={{ fontSize: 48 }}>SignupScreen</Text>
-            <Button
-                title="Go to Signin"
-                onPress={() => navigation.navigate('Signin')}
+        <View style={styles.container}>
+            <NavigationEvents
+                onWillFocus={() => {}}
+                onDidFocus={() => {}}
+                onWillBlur={() => {
+                    clearErrorMessage();
+                }} // navigate away
+                onDidBlur={() => {}}
             />
-            <Button
-                title="Go to main flow"
-                onPress={() => navigation.navigate('mainFlow')}
+            <AuthForm
+                headerText="Sign up for Tracker"
+                errorMessage={state.errorMessage}
+                submitButtonText="Sign Up"
+                onSubmit={({ email, password }) => signup({ email, password })}
             />
-            <Text>[StackNavigator]</Text>
-        </>
+            <NavLink
+                routeName="Signin"
+                text="Alread have an account? Sign in instead"
+            />
+        </View>
     );
 };
 
 const styles = StyleSheet.create({});
 
-SignupScreen.navigationOptions = () => {};
+SignupScreen.navigationOptions = () => {
+    return {
+        header: null
+    };
+};
 
 export default SignupScreen;

@@ -14,7 +14,13 @@ import TrackDetailScreen from './src/screens/TrackDetailScreen';
 import TrackListScreen from './src/screens/TrackListScreen';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
+import { Provider as AuthProvider } from './src/context/AuthContext';
+import { setNavigator } from './src/navigationRef';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+
 const switchNavigator = createSwitchNavigator({
+    // add ResolveAuth to top to make sure we show it
+    ResolveAuth: ResolveAuthScreen,
     loginFlow: createStackNavigator({
         Signup: SignupScreen,
         Signin: SigninScreen
@@ -29,4 +35,21 @@ const switchNavigator = createSwitchNavigator({
     })
 });
 
-export default createAppContainer(switchNavigator);
+// navigation defined here
+const App = createAppContainer(switchNavigator);
+
+// The <AuthProvider /> makes the Context State available to any nested components
+// that have been wrapped here
+export default () => {
+    return (
+        <AuthProvider>
+            {/* navigation instantiated here */}
+            {/* ref is a function that gets called with the navigator object, enabling us to navigate around, like a hook into our component */}
+            <App
+                ref={navigator => {
+                    setNavigator(navigator);
+                }}
+            />
+        </AuthProvider>
+    );
+};
