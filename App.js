@@ -17,6 +17,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { setNavigator } from './src/navigationRef';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import { Provider as LocationProvider } from './src/context/LocationContext';
 
 const switchNavigator = createSwitchNavigator({
     // add ResolveAuth to top to make sure we show it
@@ -42,14 +43,16 @@ const App = createAppContainer(switchNavigator);
 // that have been wrapped here
 export default () => {
     return (
-        <AuthProvider>
-            {/* navigation instantiated here */}
-            {/* ref is a function that gets called with the navigator object, enabling us to navigate around, like a hook into our component */}
-            <App
-                ref={navigator => {
-                    setNavigator(navigator);
-                }}
-            />
-        </AuthProvider>
+        <LocationProvider>
+            <AuthProvider>
+                {/* navigation instantiated here */}
+                {/* ref is a function that gets called with the navigator object, enabling us to navigate around, like a hook into our component */}
+                <App
+                    ref={navigator => {
+                        setNavigator(navigator);
+                    }}
+                />
+            </AuthProvider>
+        </LocationProvider>
     );
 };
