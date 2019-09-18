@@ -7,7 +7,7 @@ import Map from '../components/Map';
 import { Context as LocationContext } from '../context/LocationContext';
 import useLocation from '../hooks/useLocation';
 import TrackForm from '../components/TrackForm';
-//import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 const TrackCreateScreen = ({ isFocused }) => {
     // calling a Context to get access the addLocation Action Function
@@ -22,8 +22,6 @@ const TrackCreateScreen = ({ isFocused }) => {
         },
         [recording]
     );
-
-    //console.log('OUTSIDE TrackCreateScreen: ', state.recording);
 
     // receive the error value and call useLocation, passing a callback function
     // to be run anytime we get a new location
@@ -48,8 +46,8 @@ const TrackCreateScreen = ({ isFocused }) => {
 };
 
 TrackCreateScreen.navigationOptions = {
-    title: 'Add Track'
-    //tabBarIcon: <FontAwesome name="plus" size={20} />
+    title: 'Add Track',
+    tabBarIcon: <FontAwesome name="plus" size={20} />
 };
 
 export default withNavigationFocus(TrackCreateScreen);

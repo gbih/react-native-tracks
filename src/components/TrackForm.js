@@ -14,8 +14,6 @@ const TrackForm = () => {
 
     const [saveTrack] = useSaveTrack();
 
-    console.log(locations.length);
-
     return (
         <>
             <Spacer>

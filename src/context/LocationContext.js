@@ -12,9 +12,6 @@ import createDataContext from './createDataContext';
 // locations: Array[],
 // recording: false
 const locationReducer = (state, action) => {
-    //console.log(state.locations.length);
-    //console.log(state);
-
     switch (action.type) {
         case 'add_current_location':
             // return copy of state, with updated currentLocation property
@@ -59,7 +56,7 @@ const stopRecording = dispatch => () => {
 const addLocation = dispatch => (location, recording) => {
     // first action will update our current location
     dispatch({ type: 'add_current_location', payload: location });
-    //console.log('*** addLocation: ', recording);
+
     if (recording) {
         // second action will add current location to locations[] array
         dispatch({ type: 'add_location', payload: location });
