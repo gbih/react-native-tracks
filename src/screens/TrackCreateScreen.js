@@ -1,59 +1,55 @@
 import '../_mockLocation';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-elements';
-import { SafeAreaView } from 'react-navigation';
+import { SafeAreaView, withNavigationFocus } from 'react-navigation';
 import Map from '../components/Map';
-import {
-    requestPermissionsAsync,
-    watchPositionAsync,
-    Accuracy
-} from 'expo-location';
-
 import { Context as LocationContext } from '../context/LocationContext';
+import useLocation from '../hooks/useLocation';
+import TrackForm from '../components/TrackForm';
+//import { FontAwesome } from '@expo/vector-icons';
 
-const TrackCreateScreen = ({ navigation }) => {
-    // access the addLocation Action Function
-    const { addLocation } = useContext(LocationContext);
+const TrackCreateScreen = ({ isFocused }) => {
+    // calling a Context to get access the addLocation Action Function
+    const {
+        state: { recording },
+        addLocation
+    } = useContext(LocationContext);
 
-    const [err, setErr] = useState(null);
+    const callback = useCallback(
+        location => {
+            addLocation(location, recording);
+        },
+        [recording]
+    );
 
-    const startWatching = async () => {
-        try {
-            await requestPermissionsAsync();
-            await watchPositionAsync(
-                {
-                    accuracy: Accuracy.BestForNavigation,
-                    timeInterval: 1000,
-                    distanceInterval: 10
-                },
-                location => {
-                    addLocation(location);
-                }
-            );
-            console.log('APPROVED TRACKING');
-        } catch (e) {
-            // there's a bug in IOS where rejecting permissions will not throw an error!
-            console.log('REJECTED TRACKING');
-            setErr(e);
-        }
-    };
+    //console.log('OUTSIDE TrackCreateScreen: ', state.recording);
 
-    useEffect(() => {
-        startWatching();
-    }, []);
+    // receive the error value and call useLocation, passing a callback function
+    // to be run anytime we get a new location
+    //const [err] = useLocation(location => addLocation(location));
+    //
+
+    const [err] = useLocation(isFocused || recording, callback);
+
+    // This is the problematic callback function.
+    // We don't want to recreate this from scratch everytime we call TrackCreateScreen.
+    // To avoid doing so, we use the useCallback hook
+    // addLocation(location, state.recording);
 
     return (
         <SafeAreaView forceInset={{ top: 'always' }}>
             <Text h2>Create a Track</Text>
             <Map />
             {err ? <Text>Please enable location services</Text> : null}
+            <TrackForm />
         </SafeAreaView>
     );
 };
 
-const styles = StyleSheet.create({});
+TrackCreateScreen.navigationOptions = {
+    title: 'Add Track'
+    //tabBarIcon: <FontAwesome name="plus" size={20} />
+};
 
-TrackCreateScreen.navigationOptions = () => {};
-
-export default TrackCreateScreen;
+export default withNavigationFocus(TrackCreateScreen);

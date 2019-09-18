@@ -25,7 +25,7 @@ setInterval(() => {
         location: getLocation(counter)
     });
     counter++;
-}, 1000);
+}, 2000);
 /*
 Once every second, we event an event directly into the Location library. 
 We essentially simulate the changing user location in the real world.

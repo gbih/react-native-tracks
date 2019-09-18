@@ -29,7 +29,6 @@ const authReducer = (state, action) => {
             return { errorMessage: '', token: action.payload };
 
         case 'signout':
-            console.log('---- signout state', state);
             // currently out state only contains token and errorMessage,
             // so if we update both, we really don't need to return a
             // new copy of state. If there any +/- for this?
@@ -62,13 +61,11 @@ const signup = dispatch => async ({ email, password }) => {
             email,
             password
         });
-        console.log('===================', response.data);
         await AsyncStorage.setItem('token', response.data.token);
         dispatch({ type: 'signin', payload: response.data.token });
 
         navigate('TrackList'); // or mainFlow
     } catch (err) {
-        console.log(err.response.data);
         // call dispatch anytime we want to update our state
         dispatch({
             type: 'add_error',
@@ -85,12 +82,10 @@ const signin = dispatch => async ({ email, password }) => {
             email,
             password
         });
-        console.log('===================', response.data);
         await AsyncStorage.setItem('token', response.data.token);
         dispatch({ type: 'signin', payload: response.data.token });
         navigate('TrackList');
     } catch (err) {
-        console.log('--------------- ', err);
         dispatch({
             type: 'add_error',
             payload: 'Something went wrong with Sign In'
@@ -119,7 +114,6 @@ const tryLocalSignin = dispatch => async () => {
 };
 
 const signout = dispatch => async () => {
-    // somehow signout
     await AsyncStorage.removeItem('token');
     dispatch({ type: 'signout' });
     navigate('loginFlow');

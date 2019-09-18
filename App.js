@@ -18,6 +18,16 @@ import { Provider as AuthProvider } from './src/context/AuthContext';
 import { setNavigator } from './src/navigationRef';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import { Provider as LocationProvider } from './src/context/LocationContext';
+import { Provider as TrackProvider } from './src/context/TrackContext';
+
+const trackListFlow = createStackNavigator({
+    TrackList: TrackListScreen,
+    TrackDetail: TrackDetailScreen
+});
+
+trackListFlow.navigationOptions = {
+    title: 'Tracks'
+};
 
 const switchNavigator = createSwitchNavigator({
     // add ResolveAuth to top to make sure we show it
@@ -27,10 +37,7 @@ const switchNavigator = createSwitchNavigator({
         Signin: SigninScreen
     }),
     mainFlow: createBottomTabNavigator({
-        trackListFlow: createStackNavigator({
-            TrackList: TrackListScreen,
-            TrackDetail: TrackDetailScreen
-        }),
+        trackListFlow: trackListFlow,
         TrackCreate: TrackCreateScreen,
         Account: AccountScreen
     })
@@ -43,16 +50,18 @@ const App = createAppContainer(switchNavigator);
 // that have been wrapped here
 export default () => {
     return (
-        <LocationProvider>
-            <AuthProvider>
-                {/* navigation instantiated here */}
-                {/* ref is a function that gets called with the navigator object, enabling us to navigate around, like a hook into our component */}
-                <App
-                    ref={navigator => {
-                        setNavigator(navigator);
-                    }}
-                />
-            </AuthProvider>
-        </LocationProvider>
+        <TrackProvider>
+            <LocationProvider>
+                <AuthProvider>
+                    {/* navigation instantiated here */}
+                    {/* ref is a function that gets called with the navigator object, enabling us to navigate around, like a hook into our component */}
+                    <App
+                        ref={navigator => {
+                            setNavigator(navigator);
+                        }}
+                    />
+                </AuthProvider>
+            </LocationProvider>
+        </TrackProvider>
     );
 };
